@@ -15,7 +15,7 @@ const Main = () => {
                 </div>
             </div>
 
-            <footer className='absolute bottom-0 w-full'>
+            <footer className='bottom-0 w-full'>
                 <Footer/>
             </footer>
         </div>

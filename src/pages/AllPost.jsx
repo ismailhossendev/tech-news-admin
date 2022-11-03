@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {FaBan,FaEye} from 'react-icons/fa'
 import {TiEdit} from 'react-icons/ti'
-import { Link } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 const AllPost = () => {
+    const [newses,setNewses] = useState([])
+    const [refresh,setRefresh] = useState(true)
+    useEffect(()=>{
+        fetch('http://localhost:5000/news')
+        .then(res => res.json())
+        .then(data =>{
+            setNewses(data)
+        })
+    },[refresh])
     return (
         <div className="overflow-x-auto w-full">
             <div className=" flex justify-between px-1 items-center">
@@ -20,33 +29,50 @@ const AllPost = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th>
-                            <button className='btn btn-info text-xl'><FaBan/></button>
-                        </th>
-                        <td>
-                        <div className="flex items-center space-x-3">
-                            <div className="avatar">
-                            <div className="mask mask-squircle w-12 h-12">
-                                <img src="/tailwind-css-component-profile-2@56w.png" alt="Avatar Tailwind CSS Component" />
-                            </div>
-                            </div>
-                            <div>
-                            <div className="font-bold">Hart Hagerty</div>
-                            <div className="text-sm opacity-50">United States</div>
-                            </div>
-                        </div>
-                        </td>
-                        <td>
-                        Zemlak, Daniel and Leannon
-                        <br/>
-                        <span className="badge badge-ghost badge-sm">Desktop Support Technician</span>
-                        </td>
-                        <td><FaEye className='inline mb-1' /> 400</td>
-                        <th>
-                        <Link to='/post/edit' className="btn btn-secondary btn-xs">edit</Link>
-                        </th>
-                    </tr>
+                    {
+                        newses.map(news =>{
+
+                            const {title,authors,summary,published_date,rank,media,_id} = news;
+                            const handledelete = ()=>{
+                                fetch(`http://localhost:5000/news?id=${_id}`,{
+                                    method:'DELETE'
+                                })
+                                .then(res =>{
+                                    setRefresh(!refresh)
+                                })
+                            }
+                        
+                            return(
+                                <tr>
+                                    <th>
+                                        <button onClick={handledelete} className='btn btn-info text-xl'><FaBan/></button>
+                                    </th>
+                                    <td>
+                                    <div className="flex items-center space-x-3">
+                                        <div className="avatar">
+                                        <div className="mask mask-squircle w-12 h-12">
+                                            <img src={media} alt="" />
+                                        </div>
+                                        </div>
+                                        <div>
+                                        <div className="font-bold">{title?.length > 20 ? title.slice(0,30) : title}</div>
+                                        <div className="text-sm opacity-50">{authors}</div>
+                                        </div>
+                                    </div>
+                                    </td>
+                                    <td>
+                                    {summary.slice(0,60)+"..."}
+                                    <br/>
+                                    <span className="badge badge-ghost badge-sm">{published_date}</span>
+                                    </td>
+                                    <td><FaEye className='inline mb-1' />{rank} {refresh && 'ok'}</td>
+                                    <th>
+                                    <Link to='/post/edit' className="btn btn-secondary btn-xs">edit</Link>
+                                    </th>
+                                </tr>
+                            )
+                        })
+                    }
                 </tbody>
                 <tfoot>
                     <tr>
