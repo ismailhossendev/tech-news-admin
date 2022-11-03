@@ -16,7 +16,6 @@ export const router = createBrowserRouter([
             },
             {
                 path:'/posts',
-                loader:()=>fetch('http://localhost:5000/news'),
                 element:<AllPost/>
             },
             {

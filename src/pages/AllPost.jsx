@@ -5,23 +5,49 @@ import { Link } from 'react-router-dom';
 const AllPost = () => {
     const [newses,setNewses] = useState([])
     const [refresh,setRefresh] = useState(true)
+    const [count,setCount] = useState(0);
+    const [size,setSize] = useState(10);
+    const [page,setPage] = useState(0);
+
+    const pages = Math.ceil(count / size)
+
     useEffect(()=>{
-        fetch('http://localhost:5000/news')
+        fetch(`http://localhost:5000/news?page=${page}&size=${size}`)
         .then(res => res.json())
         .then(data =>{
-            setNewses(data)
+            setNewses(data.news)
+            setCount(data.count)
         })
-    },[refresh])
+    },[refresh,page,size])
+
     return (
         <div className="overflow-x-auto w-full">
+            <div className="">
+                {
+                    [...Array(pages).keys()].map(num => {
+                    return <button className={`btn btn-square border-white ${num === page && "btn-primary"}`}onClick={()=> setPage(num)} value={num} key={num}>{num +1}</button>
+                    })
+                }
+                {/* <button className="btn">1</button>
+                <button className="btn">2</button>
+                <button className="btn">3</button>
+                <button className="btn">4</button> */}
+            </div>
             <div className=" flex justify-between px-1 items-center">
-                <h1 className="text-2xl font-semibold font-serif">Your All Post </h1>
+                <h1 className="text-2xl font-semibold font-serif">Your All Post :{count}</h1>
                 <Link to='/post/create' className='text-lg flex btn btn-primary my-2'><TiEdit className='text-3xl mb-1'/>Create Post</Link>
             </div>
             <table className="table w-full ">
                 <thead>
                     <tr>
-                        <th></th>
+                        <th>
+                            <select onChange={e => setSize(e.target.value)} className='btn btn-sm'>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </th>
                         <th>Title</th>
                         <th>Details</th>
                         <th>VIew</th>
@@ -30,8 +56,7 @@ const AllPost = () => {
                 </thead>
                 <tbody>
                     {
-                        newses.map(news =>{
-
+                        newses.map(news =>{ 
                             const {title,author,summary,published_date,rank,media,_id} = news;
                             const handleDelete = ()=>{
                                 fetch(`http://localhost:5000/news?id=${_id}`,{
@@ -42,9 +67,8 @@ const AllPost = () => {
                                     alert(res.message)
                                 })
                             }
-                        
                             return(
-                                <tr>
+                                <tr key={news._id}>
                                     <th>
                                         <button onClick={handleDelete} className='btn btn-info text-xl'><FaBan/></button>
                                     </th>
