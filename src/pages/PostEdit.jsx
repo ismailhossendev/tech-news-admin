@@ -15,10 +15,12 @@ const PostEdit = () => {
             },
             body:JSON.stringify({title,summary,media})
         })
-        .then(res => res.JSON())
-        .then(data =>{
-            alert(data.message)
-        })
+        .then(res =>{
+            if(res){
+                alert('updated')
+            }
+        } )
+        
     }
 
     return (

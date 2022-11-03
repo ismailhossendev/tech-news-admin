@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {FaBan,FaEye} from 'react-icons/fa'
 import {TiEdit} from 'react-icons/ti'
-import { Link, useLoaderData } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 const AllPost = () => {
     const [newses,setNewses] = useState([])
     const [refresh,setRefresh] = useState(true)
@@ -39,6 +39,7 @@ const AllPost = () => {
                                 })
                                 .then(res =>{
                                     setRefresh(!refresh)
+                                    alert(res.message)
                                 })
                             }
                         
