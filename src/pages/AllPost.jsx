@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {FaBan,FaEye} from 'react-icons/fa'
 import {TiEdit} from 'react-icons/ti'
-import { Link} from 'react-router-dom';
+import { Link, useLoaderData } from 'react-router-dom';
 const AllPost = () => {
     const [newses,setNewses] = useState([])
     const [refresh,setRefresh] = useState(true)
@@ -32,8 +32,8 @@ const AllPost = () => {
                     {
                         newses.map(news =>{
 
-                            const {title,authors,summary,published_date,rank,media,_id} = news;
-                            const handledelete = ()=>{
+                            const {title,author,summary,published_date,rank,media,_id} = news;
+                            const handleDelete = ()=>{
                                 fetch(`http://localhost:5000/news?id=${_id}`,{
                                     method:'DELETE'
                                 })
@@ -45,7 +45,7 @@ const AllPost = () => {
                             return(
                                 <tr>
                                     <th>
-                                        <button onClick={handledelete} className='btn btn-info text-xl'><FaBan/></button>
+                                        <button onClick={handleDelete} className='btn btn-info text-xl'><FaBan/></button>
                                     </th>
                                     <td>
                                     <div className="flex items-center space-x-3">
@@ -56,7 +56,7 @@ const AllPost = () => {
                                         </div>
                                         <div>
                                         <div className="font-bold">{title?.length > 20 ? title.slice(0,30) : title}</div>
-                                        <div className="text-sm opacity-50">{authors}</div>
+                                        <div className="text-sm opacity-50">{author}</div>
                                         </div>
                                     </div>
                                     </td>
@@ -65,9 +65,9 @@ const AllPost = () => {
                                     <br/>
                                     <span className="badge badge-ghost badge-sm">{published_date}</span>
                                     </td>
-                                    <td><FaEye className='inline mb-1' />{rank} {refresh && 'ok'}</td>
+                                    <td><FaEye className='inline mb-1' />{rank}</td>
                                     <th>
-                                    <Link to='/post/edit' className="btn btn-secondary btn-xs">edit</Link>
+                                    <Link to={`/post/edit/${_id}`} className="btn btn-secondary btn-xs">edit</Link>
                                     </th>
                                 </tr>
                             )

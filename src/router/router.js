@@ -24,7 +24,8 @@ export const router = createBrowserRouter([
                 element:<CreatePost/>
             },
             {
-                path:'/post/edit',
+                path:'/post/edit/:id',
+                loader:({params})=> fetch(`http://localhost:5000/post/${params.id}`),
                 element:<PostEdit/>
             }
         ])
